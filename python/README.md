@@ -33,7 +33,10 @@ We are assuming you've checked out the code and are reading this from a local
 directory. If not, check out the code to a local directory.
 
 1.  Start up a sample:
+    ```bash
+    # $ python -m shopping.content.products.list
+    # [ME]
+    $ python -m shopping.content.products.list --config_path=$(pwd)/credentials
+    ```
 
-        $ python -m shopping.content.products.list
-
-1.  Examine your shell output, be inspired and start hacking an amazing new app!
+2.  Examine your shell output, be inspired and start hacking an amazing new app!
