@@ -23,6 +23,7 @@ from shopping.content import common
 # The maximum number of results to be returned in a page.
 MAX_PAGE_SIZE = 50
 
+# NOTE: .list() 看起來不能指定 account id ...?
 
 def main(argv):
   # Authenticate and construct service.

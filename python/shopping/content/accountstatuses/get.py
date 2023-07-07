@@ -21,6 +21,8 @@ import sys
 
 from shopping.content import common
 
+# NOTE: .get() 可以指定 account id ...
+
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
