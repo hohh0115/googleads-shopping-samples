@@ -16,6 +16,7 @@
 """Gets the status of all subaccounts for the specified account."""
 
 from __future__ import print_function
+
 import sys
 
 from shopping.content import common
@@ -23,38 +24,33 @@ from shopping.content import common
 # The maximum number of results to be returned in a page.
 MAX_PAGE_SIZE = 50
 
-# NOTE: .list() 看起來不能指定 account id ...?
 
 def main(argv):
-  # Authenticate and construct service.
-  service, config, _ = common.init(argv, __doc__)
-  merchant_id = config['merchantId']
-  common.check_mca(config, True)
+    # Authenticate and construct service.
+    service, config, _ = common.init(argv, __doc__)
+    merchant_id = config["merchantId"]
+    common.check_mca(config, True)
 
-  request = service.accountstatuses().list(
-      merchantId=merchant_id, maxResults=MAX_PAGE_SIZE)
+    request = service.accountstatuses().list(merchantId=merchant_id, maxResults=MAX_PAGE_SIZE)
 
-  while request is not None:
-    result = request.execute()
-    statuses = result.get('resources')
-    if not statuses:
-      print('No statuses were returned.')
-      break
-    for status in statuses:
-      print('Account %s:' % status['accountId'])
-      issue_count = 0
-      if 'products' in status:
-        for product in status['products']:
-          issues = product['itemLevelIssues']
-          for issue in issues:
-            issue_count += 1
-            print('  - Issue: [%s] "%s" affecting %s items' %
-                  (issue['code'],
-                   issue.setdefault('detail', ''),
-                   issue['numItems']))
-      print('Total num of data quality issues: %d' % issue_count)
-    request = service.accountstatuses().list_next(request, result)
+    while request is not None:
+        result = request.execute()
+        statuses = result.get("resources")
+        if not statuses:
+            print("No statuses were returned.")
+            break
+        for status in statuses:
+            print("Account %s:" % status["accountId"])
+            issue_count = 0
+            if "products" in status:
+                for product in status["products"]:
+                    issues = product["itemLevelIssues"]
+                    for issue in issues:
+                        issue_count += 1
+                        print('  - Issue: [%s] "%s" affecting %s items' % (issue["code"], issue.setdefault("detail", ""), issue["numItems"]))
+            print("Total num of data quality issues: %d" % issue_count)
+        request = service.accountstatuses().list_next(request, result)
 
 
-if __name__ == '__main__':
-  main(sys.argv)
+if __name__ == "__main__":
+    main(sys.argv)
