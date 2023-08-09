@@ -24,7 +24,13 @@ from shopping.content import common
 
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
-argparser.add_argument("account_id", nargs="?", default=0, type=int, help="The ID of the account for which to get information.")
+argparser.add_argument(
+    "account_id",
+    nargs="?",
+    default=0,
+    type=int,
+    help="The ID of the account for which to get information.",
+)
 
 
 def main(argv):
@@ -36,21 +42,30 @@ def main(argv):
     if not account_id:
         account_id = merchant_id
     elif merchant_id != account_id:
-        common.check_mca(config, True, msg="Non-multi-client accounts can only get their own information.")
+        common.check_mca(
+            config,
+            True,
+            msg="Non-multi-client accounts can only get their own information.",
+        )
 
-    status = service.accountstatuses().get(merchantId=merchant_id, accountId=merchant_id).execute()
+    status = service.accountstatuses().get(merchantId=merchant_id, accountId=account_id).execute()
 
-    print("Account %s:" % status["accountId"])
-
+    print("This is the status of account %s:" % status["accountId"])
     issue_count = 0
+    if "accountLevelIssues" in status:
+        for issue in status["accountLevelIssues"]:
+            issue_count += 1
+            print("Account Level Issue: {}. Severity: {}. Reference: {}".format(issue["title"], issue["severity"], issue["documentation"]))
+    print("Total Account Level Issues: {}".format(issue_count))
+
+    # why no "itemLevelIssues"?
     if "products" in status:
         for product in status["products"]:
-            issues = product["itemLevelIssues"]
-            for issue in issues:
-                issue_count += 1
-                print('  - Issue: [%s] "%s" affecting %s items' % (issue["code"], issue.setdefault("detail", ""), issue["numItems"]))
-
-    print("Total num of data quality issues: %d" % issue_count)
+            print(
+                "Country: {} with {} active, {} pending, {} disapproved, {} expiring".format(
+                    product["country"], product["statistics"]["active"], product["statistics"]["pending"], product["statistics"]["disapproved"], product["statistics"]["expiring"]
+                )
+            )
 
 
 if __name__ == "__main__":
