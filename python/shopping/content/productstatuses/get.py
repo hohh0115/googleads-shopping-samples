@@ -16,6 +16,7 @@
 """Gets the status of the specified product."""
 
 from __future__ import print_function
+
 import argparse
 import json
 import sys
@@ -24,24 +25,25 @@ from shopping.content import common
 
 # Declare command-line flags.
 argparser = argparse.ArgumentParser(add_help=False)
-argparser.add_argument('product_id', help='The ID of the product to query.')
+argparser.add_argument("product_id", help="The ID of the product to query.")
 
 
 def main(argv):
-  # Authenticate and construct service.
-  service, config, flags = common.init(
-      argv, __doc__, parents=[argparser])
-  merchant_id = config['merchantId']
-  product_id = flags.product_id
-  common.check_mca(config, False)
+    # Authenticate and construct service.
+    service, config, flags = common.init(argv, __doc__, parents=[argparser])
+    merchant_id = config["merchantId"]
+    product_id = flags.product_id
+    common.check_mca(config, False)
 
-  status = service.productstatuses().get(
-      merchantId=merchant_id, productId=product_id).execute()
+    status = (
+        service.productstatuses()
+        .get(merchantId=merchant_id, productId=product_id)
+        .execute()
+    )
 
-  print('- Product "%s" with title "%s":' %
-        (status['productId'], status['title']))
-  print(json.dumps(status, sort_keys=True, indent=2, separators=(',', ': ')))
+    print('- Product "%s" with title "%s":' % (status["productId"], status["title"]))
+    print(json.dumps(status, sort_keys=True, indent=2, separators=(",", ": ")))
 
 
-if __name__ == '__main__':
-  main(sys.argv)
+if __name__ == "__main__":
+    main(sys.argv)

@@ -1,38 +1,18 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-
+default_language_version:
+  python: python3.8
 repos:
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
     hooks:
-      # - id: check-added-large-files
-      - id: debug-statements
-      - id: check-ast
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
       - id: requirements-txt-fixer
         files: requirements
-      - id: check-case-conflict
-      - id: check-json
-      - id: check-merge-conflict
-      - id: check-yaml
-      - id: end-of-file-fixer
-      - id: fix-encoding-pragma
-        args: [--remove]
-      - id: mixed-line-ending
-      - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
-        exclude: "__snapshots__/"
-
-  # this is not technically always safe but usually is
-  # use comments `# isort: off` and `# isort: on` to disable/re-enable isort
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: [--line-length=240, --profile=black]
-        files: .py$
-        exclude: migrations/
-
+      - id: check-ast
+      - id: debug-statements
   - repo: https://github.com/pycqa/flake8
     rev: 3.9.2 # pick a git hash / tag to point to
     hooks:
@@ -40,21 +20,14 @@ repos:
         files: .py$
         args:
           - --ignore=E203,E501,E731,W503,W504
-
-  # this is slightly dangerous because python imports have side effects
-  # and this tool removes unused imports, which may be providing
-  # necessary side effects for the code to run
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v1.6.1
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.12.0
     hooks:
-      - id: autoflake
+      - id: isort
+        files: .py$
+        exclude: migrations/
         args:
-          - "--in-place"
-          - "--expand-star-imports"
-          - "--remove-duplicate-keys"
-          - "--remove-unused-variables"
-          - "--remove-all-unused-imports"
-
+          - --line-length=100
   - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.4
     hooks:
@@ -68,31 +41,3 @@ repos:
           # B608 was temporary set because `bandit` doesn't allow multiline string to set `nosec` comment.
         files: .py$
         exclude: migrations/
-
-  - repo: https://github.com/psf/black
-    rev: 22.8.0
-    hooks:
-      - id: black
-        args: [--line-length=240, --exclude=""]
-
-  # - repo: local
-  #   hooks:
-  #     - id: mypy
-  #       name: mypy
-  #       entry: mypy
-  #       language: system
-  #       types: [python]
-  #       exclude: migrations/|commands/|scripts/
-  #       args:
-  #         [
-  #           --pretty,
-  #           --show-error-codes,
-  #           --implicit-optional,
-  #           --follow-imports=silent,
-  #           --warn-redundant-casts,
-  #           --warn-unused-ignores,
-  #           --disallow-any-generics,
-  #           --check-untyped-defs,
-  #           --no-implicit-reexport,
-  #           --disallow-untyped-defs,
-  #         ]
