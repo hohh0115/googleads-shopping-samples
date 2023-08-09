@@ -45,8 +45,9 @@ def main(argv):
         account_id = config["merchantId"]
         print("No account ID provided. Use account ID in config instead.")
 
+    # NOTE: Cant figure out the effect of destinations parameter
     request = service.productstatuses().list(
-        merchantId=account_id, maxResults=MAX_PAGE_SIZE
+        merchantId=account_id, maxResults=MAX_PAGE_SIZE, destinations='Shopping'
     )
 
     print("This is the product status of account {}".format(account_id))
